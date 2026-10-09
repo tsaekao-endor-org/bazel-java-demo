@@ -1,0 +1,35 @@
+name: Endor Remediation PR (CI scan)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      id-token: write        # keyless Endor auth
+      contents: write        # push the remediation branch
+      pull-requests: write   # open the remediation PR
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Endor Labs Scan
+        uses: endorlabs/github-action@main
+        env:
+          # Takes precedence over any GitHub App installation token.
+          ENDOR_SCAN_SCM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ENDOR_SCAN_REMEDIATION_ACTION: "true"
+        with:
+          namespace: "endor-solutions-tsaekao.github-app"
+          api: "https://api.endorlabs.com"
+          pr: false
+          enable_github_action_token: true
+          scan_dependencies: true
+          additional_args: "--use-bazel --as-default-branch --log-level=debug"
