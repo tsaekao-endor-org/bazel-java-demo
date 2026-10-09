@@ -32,4 +32,4 @@ jobs:
           pr: false
           enable_github_action_token: true
           scan_dependencies: true
-          additional_args: "--use-bazel --as-default-branch --log-level=debug"
+          additional_args: "--use-bazel --as-default-branch --log-level=debug --ca-path=/etc/ssl/certs/ca-certificates.crt"
